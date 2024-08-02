@@ -45,6 +45,7 @@ class IngredientController extends AbstractController
         $ingredient = new Ingredient();
         $form = $this->createForm(IngredientType::class, $ingredient);
 
+
         return $this->render('pages/ingredient/new.html.twig', [
             'form' => $form->createView()
         ]);
