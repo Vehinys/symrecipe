@@ -2,19 +2,17 @@
 
 namespace App\Controller;
 
+
 use App\Entity\Ingredient;
-use App\Form\IngredientType;
 use App\Repository\IngredientRepository;
-use Doctrine\ORM\EntityManager;
 use Doctrine\ORM\EntityManagerInterface;
-use Doctrine\ORM\Mapping\Entity;
 use Knp\Component\Pager\PaginatorInterface;
-use Symfony\Component\HttpFoundation\Request;
+use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
-
-
-use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Symfony\Component\HttpFoundation\Request;
+use App\Form\IngredientType;
+use Doctrine\ORM\EntityManager;
 
 class IngredientController extends AbstractController
 {
@@ -71,9 +69,54 @@ class IngredientController extends AbstractController
 
     }
     
-    #[Route('/ingredient/edition/{id}', 'ingredient.edit', methods:['GET','POST'])]
-    public function edit() : Response
+
+    #[Route('/ingredient/edition/{id}', name: 'ingredient.edit', methods: ['GET', 'POST'])]
+    public function edit(Ingredient $ingredient, Request $request, EntityManagerInterface $manager): Response
+
     {
-        return $this->render('pages/ingredient/edit.html.twig');
+
+        $form = $this->createForm(IngredientType::class, $ingredient);
+        $form->handleRequest($request);
+        if ($form->isSubmitted() && $form->isValid()) {
+            $ingredient = $form->getData();
+            $manager->persist($ingredient);
+            $manager->flush();
+
+            $this->addFlash(
+                'success',
+                'Modification avec succès de : ' . $ingredient->getName()
+            );
+            return $this->redirectToRoute('ingredient');
+        }
+        return $this->render('pages/ingredient/edit.html.twig', [
+            'form' => $form->createView(),
+        ]);
     }
+
+    #[Route('/ingredient/suppression/{id}', name: 'ingredient.delete', methods: ['GET', 'POST'])]
+    public function delete(Ingredient $ingredient, Request $request, EntityManagerInterface $manager): Response
+
+    {
+
+        if ($ingredient) {
+
+            $manager->remove($ingredient);
+            $manager->flush();
+
+            $this->addFlash(
+                'success',
+                'Suppression effectuée de : ' . $ingredient->getName()
+            );
+
+            return $this->redirectToRoute('ingredient');
+            
+        } else {
+            $this->addFlash(
+                'warning',
+                'Echec lors de la suppression de l\'ingrédient'
+            );
+            return $this->redirectToRoute('ingredient');
+        }
+    }
+
 }
