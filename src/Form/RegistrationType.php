@@ -75,7 +75,7 @@ class RegistrationType extends AbstractType
                     ],
                     'label' => 'Mot de passe',
                     'label_attr' => [
-                        'class' => 'form-label'
+                        'class' => 'form-label mt-4'
                     ]
                 ],
                 'second_options' => [
@@ -84,7 +84,7 @@ class RegistrationType extends AbstractType
                     ],
                     'label' => 'Confirmation du mot de passe',
                     'label_attr' => [
-                        'class' => 'form-label'
+                        'class' => 'form-label mt-4'
                     ]
                 ],
                 'invalid_message'=>'Les mots de passe ne correspondent pas.'
