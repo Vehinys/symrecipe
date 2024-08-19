@@ -9,6 +9,7 @@ use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
 
 #[ORM\Entity(repositoryClass: IngredientRepository::class)]
 #[UniqueEntity('name')]
+
 class Ingredient
 {
     #[ORM\Id]
@@ -30,6 +31,10 @@ class Ingredient
     #[ORM\Column]
     #[Assert\NotNull()]
     private ?\DateTimeImmutable $createdAt;
+
+    #[ORM\ManyToOne(inversedBy: 'ingredients')]
+    #[ORM\JoinColumn(nullable: false)]
+    private ?User $user = null;
 
 
     /**
@@ -83,5 +88,17 @@ class Ingredient
     public function __toString()
     {
         return $this->name;
+    }
+
+    public function getUser(): ?User
+    {
+        return $this->user;
+    }
+
+    public function setUser(?User $user): static
+    {
+        $this->user = $user;
+
+        return $this;
     }
 }
