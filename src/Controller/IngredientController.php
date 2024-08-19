@@ -27,9 +27,9 @@ class IngredientController extends AbstractController
         IngredientRepository $repository, 
         PaginatorInterface $paginator, 
         Request $request
-    ): Response {
+    ): Response{
         $ingredients = $paginator->paginate(
-            $repository->findBy(['user'=>$this->getUser()]),
+            $repository->findAll(['user'=>$this->getUser()]),
             $request->query->getInt('page', 1),
             10
         );
